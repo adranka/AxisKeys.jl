@@ -138,7 +138,7 @@ for (T, S) in [ (:KeyedArray, :KeyedArray),
             α, β
         else
             α = val_strip(dims)
-            β = cat(keyless(A), keyless(B), keyless.(Cs)...; dims=numerical_dims)
+            β = cat(keyless(A), keyless(B), keyless.(Cs)...; dims=dims)
             α, β
         end
         new_keys = ntuple(ndims(data)) do d
