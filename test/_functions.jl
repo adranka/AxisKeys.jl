@@ -6,6 +6,7 @@ MN = NamedDimsArray(M.data.data, r='a':'c', c=2:5)
 V = wrapdims(rand(1:99, 10), v=10:10:100)
 VN = NamedDimsArray(V.data.data, v=10:10:100)
 A3 = wrapdims(rand(Int8, 3,4,2), r='a':'c', c=2:5, p=[10.0, 20.0])
+MND = wrapdims(rand(Int8, 2, 3), 11.0:12.0, [:a, :b, :c])
 
 @testset "dims" begin
 
@@ -230,6 +231,13 @@ end
 
     @test dimnames(cat(M; dims=3)) == (:r, :c, :_)
     @test axiskeys(cat(M; dims=3)) == ('a':1:'c', 2:5, Base.OneTo(1))
+
+    @test axiskeys(vcat(MND,MND)) == ([11.0, 12.0, 11.0, 12.0], [:a, :b, :c])
+    @test axiskeys(hcat(MND,MND)) == (11.0:1.0:12.0, [:a, :b, :c, :a, :b, :c])
+    @test dimnames(vcat(MND,MND)) == (:_, :_)
+    @test dimnames(hcat(MND,MND)) == (:_, :_)
+    @test cat(MND,MND; dims=1) == vcat(MND,MND)
+    @test cat(MND,MND; dims=2) == hcat(MND,MND)
 end
 @testset "matmul" begin
 
