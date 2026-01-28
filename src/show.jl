@@ -84,18 +84,21 @@ function keyed_print_matrix(io::IO, A, reduce_size::Bool=false)
     h, w = displaysize(io)
     wn = w÷3 # integers take 3 columns each when printed, floats more
 
+    # Check if output should be limited; if not, show all rows/cols
+    limit = get(io, :limit, false)::Bool
+
     fakearray = if ndims(A) == 1
-        top =    size(A,1) < h ? Colon() : (1:(h÷2))
-        bottom = size(A,1) < h ? (1:0)   : size(A,1)-(h÷2):size(A,1)
+        top =    (!limit || size(A,1) < h) ? Colon() : (1:(h÷2))
+        bottom = (!limit || size(A,1) < h) ? (1:0)   : (size(A,1)-(h÷2)):size(A,1)
         hcat(vcat(ShowWith.(no_offset(axiskeys(A,1))[top]; color=colour(A,1)),
                   ShowWith.(no_offset(axiskeys(A,1))[bottom]; color=colour(A,1))),
              vcat(getindex(no_offset(unname(keyless(A))), top),
                   getindex(no_offset(unname(keyless(A))), bottom)) |> full)
     else
-        top    = size(A,1) < h  ? Colon() : (1:(h÷2))
-        bottom = size(A,1) < h  ? (1:0)   : size(A,1)-(h÷2):size(A,1)
-        left   = size(A,2) < wn ? Colon() : (1:(wn÷2))
-        right  = size(A,2) < wn ? (1:0)   : size(A,2)-(wn÷2)+1:size(A,2)
+        top    = (!limit || size(A,1) < h)  ? Colon() : (1:(h÷2))
+        bottom = (!limit || size(A,1) < h)  ? (1:0)   : (size(A,1)-(h÷2)):size(A,1)
+        left   = (!limit || size(A,2) < wn) ? Colon() : (1:(wn÷2))
+        right  = (!limit || size(A,2) < wn) ? (1:0)   : (size(A,2)-(wn÷2)+1):size(A,2)
 
         topleft = hcat(ShowWith.(no_offset(axiskeys(A,1))[top]; color=colour(A,1)),
                        getindex(no_offset(unname(keyless(A))), top, left) |> full)
