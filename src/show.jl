@@ -198,8 +198,8 @@ function limited_show_nd(io::IO, a::AbstractArray, print_matrix::Function, label
     # If there are many slices, and they can't all fit, then we will print just 3
     if prod(length, tailinds) > 3 && (2+size(a,1)) * prod(length, tailinds) >  displaysize(io)[1]
         midI = CartesianIndex(map(ax -> ax[firstindex(ax) + length(ax)÷2], tailinds))
-        fewpanels = [CartesianIndex(first.(tailinds)), midI, CartesianIndex(last.(tailinds)) ]
-        printstyled(io, "[showing 3 of $(prod(length, tailinds)) slices]\n", color=c3)
+        fewpanels = unique([CartesianIndex(first.(tailinds)), midI, CartesianIndex(last.(tailinds))])
+        printstyled(io, "[showing $(length(fewpanels)) of $(prod(length, tailinds)) slices]\n", color=c3)
     else
         fewpanels = CartesianIndices(tailinds)
     end
