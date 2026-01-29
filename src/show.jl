@@ -176,7 +176,7 @@ using Base: tail, print_matrix, printstyled, alignment
 
 function Base.show_nd(io::IO, A::Union{KeyedArray, NamedDimsArray}, print_matrix::Function, label_slices::Bool)
     f = haskeys(A) ? keyed_print_matrix : Base.print_matrix
-    limit = get(io, :limit, false)
+    limit = get(io, :limit, false)::Bool
     if limit
         limited_show_nd(io, A, f, label_slices)
     else
